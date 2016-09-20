@@ -1,23 +1,23 @@
 package hello.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity(name = "MONEYBOOK")
 public class MoneyBook {
 
 	@Id
-	@GeneratedValue
+//	@GeneratedValue
 	Long id;
 
-//	@Column(name = "TITLE")
+	@Column(name = "TITLE")
 	String title;
 
-//	@Column(name = "VALUE")
+	@Column(name = "VALUE")
 	Long value;
 
-//	@Column(name = "COMMENT")
+	@Column(name = "COMMENT")
 	String comment;
 
 	public Long getId() {
@@ -60,12 +60,22 @@ public class MoneyBook {
 
 		MoneyBook moneyBook = (MoneyBook) o;
 
-		return id != null ? id.equals(moneyBook.id) : moneyBook.id == null;
+		if (id != null ? !id.equals(moneyBook.id) : moneyBook.id != null)
+			return false;
+		if (title != null ? !title.equals(moneyBook.title) : moneyBook.title != null)
+			return false;
+		if (value != null ? !value.equals(moneyBook.value) : moneyBook.value != null)
+			return false;
+		return comment != null ? comment.equals(moneyBook.comment) : moneyBook.comment == null;
 
 	}
 
 	@Override public int hashCode() {
-		return id != null ? id.hashCode() : 0;
+		int result = id != null ? id.hashCode() : 0;
+		result = 31 * result + (title != null ? title.hashCode() : 0);
+		result = 31 * result + (value != null ? value.hashCode() : 0);
+		result = 31 * result + (comment != null ? comment.hashCode() : 0);
+		return result;
 	}
 
 	@Override public String toString() {

@@ -13,7 +13,7 @@ import hello.repository.MoneyBookRepository;
 import hello.service.MoneyBookService;
 
 @RestController
-@RequestMapping("/hello")
+@RequestMapping("/hellos")
 public class HelloController {
 
 	@Autowired
@@ -35,11 +35,6 @@ public class HelloController {
 	@RequestMapping(method = RequestMethod.POST)
 	public MoneyBook create(MoneyBook moneyBook) throws Exception {
 		return moneyBookService.createMoneyBook(moneyBook);
-	}
-
-	@RequestMapping(value = "/createError", method = RequestMethod.POST)
-	public MoneyBook createError(MoneyBook moneyBook) throws Exception {
-		return moneyBookService.createMoneyBookAndLog(moneyBook);
 	}
 
 }

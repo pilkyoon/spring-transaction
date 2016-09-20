@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import hello.domain.MoneyBook;
@@ -29,18 +30,71 @@ public class MoneyBookService {
 		return moneyBookRepository.save(moneyBook);
 	}
 
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public MoneyBook createMoneyBookRequiredNew(MoneyBook moneyBook) {
+		return moneyBookRepository.save(moneyBook);
+	}
+
 	@Transactional
-	public MoneyBook createMoneyBookAndLog(MoneyBook moneyBook) throws Exception {
+	public MoneyBook saveAndOccurException(MoneyBook moneyBook) throws Exception {
 		MoneyBook moneyBookResult = moneyBookRepository.save(moneyBook);
-		logging();
+		occurException();
 		return moneyBookResult;
 	}
 
-	public void logging() throws Exception {
-		throwException1();
+	@Transactional(rollbackFor = Exception.class)
+	public MoneyBook saveAndOccurExceptionRollbackFor(MoneyBook moneyBook) throws Exception {
+		MoneyBook moneyBookResult = moneyBookRepository.save(moneyBook);
+		occurException();
+		return moneyBookResult;
 	}
 
-	public void throwException1() throws Exception {
-		throw new Exception("Some Error");
+	@Transactional
+	public MoneyBook saveAndOccurRuntimeException(MoneyBook moneyBook) throws Exception {
+		MoneyBook moneyBookResult = moneyBookRepository.save(moneyBook);
+		occurRuntimeException();
+		return moneyBookResult;
 	}
+
+	@Transactional
+	public MoneyBook saveAndOccurDataAccessException(MoneyBook moneyBook) {
+		// success
+		createMoneyBook(moneyBook);
+
+		// fail
+		MoneyBook moneyBook2 = new MoneyBook();
+		moneyBook2.setId(moneyBook.getId()+1000);
+		moneyBook2.setTitle("error title");
+		for(int i=0;i<1000;i++) {
+			moneyBook2.setTitle(moneyBook2.getTitle() + i);
+		}
+		return createMoneyBookRequiredNew(moneyBook2);
+	}
+
+	@Transactional
+	public MoneyBook logic5(MoneyBook moneyBook) {
+		// success
+		createMoneyBook(moneyBook);
+
+		moneyBook.setId(moneyBook.getId() + 1);
+		for(int i=0;i<1000;i++) {
+			moneyBook.setTitle(moneyBook.getTitle() + i);
+		}
+
+		// fail
+		MoneyBook moneyBookResult = createMoneyBook(moneyBook);
+
+		// but first save is pass!
+		return moneyBookResult;
+	}
+
+
+	public void occurException() throws Exception {
+		throw new Exception("Occur Exception");
+	}
+
+	public void occurRuntimeException() {
+		throw new RuntimeException("Some Runtime Logging Error");
+	}
+
 }
