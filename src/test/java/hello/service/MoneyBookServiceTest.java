@@ -9,6 +9,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import hello.domain.MoneyBook;
 
+import java.util.List;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 public class MoneyBookServiceTest {
@@ -65,6 +67,38 @@ public class MoneyBookServiceTest {
 		Assert.assertTrue(id.equals(moneyBookService.getMoneyBookById(id).getId()));
 		Assert.assertTrue(moneyBookService.getMoneyBookById(id+1000) == null);
 	}
+
+	@Test
+	public void testSelectMoneyBook() {
+		moneyBookService.createMoneyBook(getMoneyBook());
+		List<MoneyBook> moneyBookList = moneyBookService.getMoneyBookListByMapper();
+		moneyBookList.forEach(p->{
+			System.out.printf(p.toString());
+		});
+	}
+
+	@Test
+	public void testCreateMoneyBookByMapper() {
+		moneyBookService.createMoneyBookByMapper(getMoneyBook());
+		List<MoneyBook> moneyBookList = moneyBookService.getMoneyBookListByMapper();
+		moneyBookList.forEach(p->{
+			System.out.printf(p.toString());
+		});
+	}
+
+	@Test
+	public void testCreateAndOccurDataAccessException() {
+		MoneyBook moneyBook = getMoneyBook();
+		try {
+			moneyBookService.createAndOccurDataAccessException(getMoneyBook());
+		} catch (Exception e) {
+
+		}
+		Long id = moneyBook.getId();
+		Assert.assertTrue(id.equals(moneyBookService.getMoneyBookById(id).getId()));
+		Assert.assertTrue(moneyBookService.getMoneyBookById(id+1000) == null);
+	}
+
 
 
 	MoneyBook getMoneyBook() {
