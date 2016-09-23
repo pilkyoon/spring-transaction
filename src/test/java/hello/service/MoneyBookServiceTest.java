@@ -1,15 +1,12 @@
 package hello.service;
 
+import hello.domain.MoneyBook;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import hello.domain.MoneyBook;
-
-import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
@@ -19,6 +16,7 @@ public class MoneyBookServiceTest {
 	MoneyBookService moneyBookService;
 
 	static Long testId = 1L;
+
 
 	@Test
 	public void testSaveAndOccurException() {
@@ -47,12 +45,13 @@ public class MoneyBookServiceTest {
 	@Test
 	public void testSaveAndOccurRuntimeException() {
 		MoneyBook moneyBook = getMoneyBook();
+		Long id = moneyBook.getId();
 		try {
 			moneyBookService.saveAndOccurRuntimeException(moneyBook);
 		} catch (Exception e) {
-
+			e.printStackTrace();
 		}
-		Assert.assertTrue(moneyBookService.getMoneyBookById(moneyBook.getId()) == null);
+		Assert.assertTrue(moneyBookService.getMoneyBookById(id) == null);
 	}
 
 	@Test
@@ -67,39 +66,6 @@ public class MoneyBookServiceTest {
 		Assert.assertTrue(id.equals(moneyBookService.getMoneyBookById(id).getId()));
 		Assert.assertTrue(moneyBookService.getMoneyBookById(id+1000) == null);
 	}
-
-	@Test
-	public void testSelectMoneyBook() {
-		moneyBookService.createMoneyBook(getMoneyBook());
-		List<MoneyBook> moneyBookList = moneyBookService.getMoneyBookListByMapper();
-		moneyBookList.forEach(p->{
-			System.out.printf(p.toString());
-		});
-	}
-
-	@Test
-	public void testCreateMoneyBookByMapper() {
-		moneyBookService.createMoneyBookByMapper(getMoneyBook());
-		List<MoneyBook> moneyBookList = moneyBookService.getMoneyBookListByMapper();
-		moneyBookList.forEach(p->{
-			System.out.printf(p.toString());
-		});
-	}
-
-	@Test
-	public void testCreateAndOccurDataAccessException() {
-		MoneyBook moneyBook = getMoneyBook();
-		try {
-			moneyBookService.createAndOccurDataAccessException(getMoneyBook());
-		} catch (Exception e) {
-
-		}
-		Long id = moneyBook.getId();
-		Assert.assertTrue(id.equals(moneyBookService.getMoneyBookById(id).getId()));
-		Assert.assertTrue(moneyBookService.getMoneyBookById(id+1000) == null);
-	}
-
-
 
 	MoneyBook getMoneyBook() {
 		MoneyBook moneyBook = new MoneyBook();
