@@ -37,9 +37,4 @@ public class HelloController {
 		return moneyBookService.createMoneyBook(moneyBook);
 	}
 
-	@RequestMapping(value = "saveAndOccurDataAccessException", method = RequestMethod.POST)
-	public MoneyBook saveAndOccurDataAccessException(MoneyBook moneyBook) {
-		return moneyBookService.saveAndOccurDataAccessException(moneyBook);
-	}
-
 }
